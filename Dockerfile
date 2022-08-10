@@ -12,4 +12,5 @@ RUN go build -o /mailer_api
 FROM gcr.io/distroless/base-debian11
 LABEL maintainer="Erick Amorim <github.com/ericklima-ca>"
 COPY --from=builder /mailer_api /mailer_api
+EXPOSE 8080
 ENTRYPOINT ["/mailer_api"]

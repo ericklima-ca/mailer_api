@@ -2,6 +2,7 @@ package mailer
 
 import (
 	"encoding/json"
+	"log"
 	"net"
 	"strconv"
 
@@ -12,9 +13,9 @@ type MailerService struct {
 	HostPort string
 }
 type message struct {
-	To      string `json:"to,omitempty"`
-	Subject string `json:"subject,omitempty"`
-	Body    string `json:"body,omitempty"`
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Body    string `json:"body"`
 	From    string `json:"from"`
 	Token   string `json:"token"`
 }
@@ -27,7 +28,6 @@ func (ms MailerService) SendMail(jsonBody []byte) error {
 	}
 
 	m := mail.NewMessage()
-
 	m.SetHeader("From", msg.From)
 	m.SetHeader("To", msg.To)
 	m.SetHeader("Subject", msg.Subject)
@@ -35,7 +35,7 @@ func (ms MailerService) SendMail(jsonBody []byte) error {
 
 	host, port_str, _ := net.SplitHostPort(ms.HostPort)
 	port_number, _ := strconv.Atoi(port_str)
-
+	log.Println(host, port_number, msg.From, msg.Token)
 	d := mail.NewDialer(host, port_number, msg.From, msg.Token)
 	if err := d.DialAndSend(m); err != nil {
 		return err
