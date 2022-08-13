@@ -9,11 +9,11 @@ For now, it only accepts the gmail server (setted host and port to `"smtp.gmail.
 ## MESSAGE STRUCT
 ``` go
 type message struct {
-	To      string `json:"to,omitempty"`
-	Subject string `json:"subject,omitempty"`
-	Body    string `json:"body,omitempty"`
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Body    string `json:"body"`
 	From    string `json:"from"`
-	Token   string `json:"token"` // temporary token!
+	Token   string `json:"token"` // a temporary token!
 }
 ```
 ## TODOS

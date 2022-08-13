@@ -12,17 +12,15 @@ import (
 
 	"github.com/ericklima-ca/mailer_api/http_server"
 	"github.com/ericklima-ca/mailer_api/mailer"
-	"github.com/joho/godotenv"
 )
-
-func init() {
-	godotenv.Load()
-}
 
 func main() {
 	var (
 		HOST_SMTP = os.Getenv("HOST_SMTP")
 	)
+	if HOST_SMTP == "" {
+		HOST_SMTP = "smtp.gmail.com:465"
+	}
 
 	ms := mailer.MailerService{
 		HostPort: HOST_SMTP,
@@ -45,7 +43,7 @@ func main() {
 		}
 	}()
 
-	quit := make(chan os.Signal)
+	quit := make(chan os.Signal, 2)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	log.Println("Shutting down server...")
