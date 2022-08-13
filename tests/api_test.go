@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/ericklima-ca/mailer_api/http_server"
+	"github.com/ericklima-ca/mailer_api/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,17 +28,10 @@ func TestMailService(t *testing.T) {
 	}
 	req.Header.Set("Content-Type", "application/json")
 	mock := http_server.NewServer(http_server.HTTPServer{
-		MailerService: MailerMock{},
+		MailerService: models.MailerMock{},
 	})
 
 	mock.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
-}
-
-type MailerMock struct{}
-
-func (s MailerMock) SendMail(_ []byte) error {
-	log.Println("email sent successfully")
-	return nil
 }
