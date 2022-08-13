@@ -2,8 +2,8 @@ package mailer
 
 import (
 	"encoding/json"
-	"log"
 	"net"
+	"regexp"
 	"strconv"
 
 	"gopkg.in/mail.v2"
@@ -12,6 +12,7 @@ import (
 type MailerService struct {
 	HostPort string
 }
+
 type message struct {
 	To      string `json:"to"`
 	Subject string `json:"subject"`
@@ -27,18 +28,32 @@ func (ms MailerService) SendMail(jsonBody []byte) error {
 		return err
 	}
 
+	email, fullAddr := parseAddr(msg.From)
+
 	m := mail.NewMessage()
-	m.SetHeader("From", msg.From)
+	m.SetHeader("From", fullAddr)
 	m.SetHeader("To", msg.To)
 	m.SetHeader("Subject", msg.Subject)
 	m.SetBody("text/html", msg.Body)
 
 	host, port_str, _ := net.SplitHostPort(ms.HostPort)
 	port_number, _ := strconv.Atoi(port_str)
-	log.Println(host, port_number, msg.From, msg.Token)
-	d := mail.NewDialer(host, port_number, msg.From, msg.Token)
+	d := mail.NewDialer(host, port_number, email, msg.Token)
 	if err := d.DialAndSend(m); err != nil {
 		return err
 	}
 	return nil
+}
+
+func parseAddr(str string) (email, fullAddr string) {
+	regexFullAddr := regexp.MustCompile(`^([\w\s<])+@([\w])+(\.com)(.br)?(>)$`)
+	fullAddr = str
+	if regexFullAddr.Match([]byte(fullAddr)) {
+		emailPattern := regexp.MustCompile(`\s*\b[^@\s]+@[^\s]+\b\s*`)
+		email = emailPattern.FindString(str)
+		return
+	} else {
+		email = str
+		return
+	}
 }
