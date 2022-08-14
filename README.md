@@ -1,4 +1,4 @@
-# Mailer API
+# Mailer API | ![example workflow](https://github.com/ericklima-ca/mailer_api/actions/workflows/go.yml/badge.svg)
 ## Intro
 A simple mailing service via HTTP.
 It receives messages from a POST payload and send email as requested, if the message is valid. 
